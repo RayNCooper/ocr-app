@@ -1,16 +1,13 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "redis"
 import { Queue } from "bullmq"
 import { v4 as uuidv4 } from "uuid"
 import { validateFile, uploadToS3 } from "@/lib/utils"
+import RedisClient from "@/lib/redisClient"
 
 export async function POST(request: NextRequest) {
 
-  const redis = createClient({
-    url: process.env.REDIS_URL || "redis://localhost:6379",
-    password: process.env.REDIS_PASSWORD || "",
-  })
-
+  const redis = await RedisClient.getInstance()
+  
   const ocrQueue = new Queue("ocrQueue", {
     connection: {
       host: process.env.REDIS_HOST || "localhost",

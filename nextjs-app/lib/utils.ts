@@ -1,6 +1,7 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import S3Client from "./s3Client"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -41,13 +42,7 @@ export function validateFile(file: File): { isValid: boolean; error?: string; st
 
 export async function uploadToS3(file: File, s3Key: string): Promise<void> {
 
-  const s3Client = new S3Client({
-    region: process.env.AWS_REGION,
-    credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-    },
-  })
+  const s3Client = await S3Client.getInstance()
 
   const buffer = Buffer.from(await file.arrayBuffer())
   const uploadCommand = new PutObjectCommand({

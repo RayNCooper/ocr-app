@@ -11,6 +11,7 @@ export async function classifyDocument(rawText: string) {
         schema: DocumentSchema,
         prompt: `Analyze this OCR text and extract structured information.
         Determine the document type, extract key data and provide a summary.
+        Correct possible OCR errors such as typos or incomplete words, etc.
 
         OCR text:
         ${rawText}`,

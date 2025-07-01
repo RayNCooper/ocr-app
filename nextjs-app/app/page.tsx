@@ -1,7 +1,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileUpload } from "@/components/file-upload"
+import EntryList from "@/components/entry-list"
+import { getEntries } from "./actions"
+
+export const dynamic = 'force-dynamic'
 
 export default async function Home() {
+
+  const entriesData = await getEntries()  
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -17,6 +23,7 @@ export default async function Home() {
             <FileUpload />
           </CardContent>
         </Card>
+        <EntryList entriesProp={entriesData} />
       </div>
     </div>
   )

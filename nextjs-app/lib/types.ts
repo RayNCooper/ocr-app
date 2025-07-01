@@ -19,3 +19,15 @@ export const DocumentSchema = z.object({
 })
 
 export type ValidatedData = z.infer<typeof DocumentSchema>
+
+export interface DocumentEntry {
+    id: string
+    fileName: string
+    fileSize: string
+    completedAt?: string
+    s3Key: string
+    status: 'uploaded' | 'processing' | 'validated' | 'failed'
+    ocrResult?: string
+    validatedData?: ValidatedData
+    uploadedAt: string
+}
