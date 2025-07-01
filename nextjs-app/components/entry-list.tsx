@@ -1,13 +1,13 @@
 "use client"
 
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
-import { Card, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { DocumentEntry } from "@/lib/types"
 import { getEntries, removeEntry, viewOriginalFile } from "@/app/actions"
 import { useState } from 'react'
 import useSWR from "swr"
-import { FileText, Receipt, FileSignature, Trash2, ExternalLink } from "lucide-react"
+import { FileText, Receipt, FileSignature, Trash2, ExternalLink, Loader, FileQuestionMark } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
@@ -71,14 +71,27 @@ export default function EntryList({ entriesProp }: { entriesProp: DocumentEntry[
                                     setDialogOpen(true)
                                 }}>
                                     <CardHeader>
-                                        <CardTitle className="text-wrap">{new Date(entry.uploadedAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</CardTitle>
+                                        <CardTitle className="text-wrap flex items-center gap-2">
+                                            {
+                                                entry.validatedData?.documentType ? (
+                                                    <>
+                                                        {entry.validatedData.documentType === 'invoice' && <FileText className="h-4 w-4" />}
+                                                        {entry.validatedData.documentType === 'receipt' && <Receipt className="h-4 w-4" />}
+                                                        {entry.validatedData.documentType === 'contract' && <FileSignature className="h-4 w-4" />}
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Loader className="h-4 w-4 animate-spin" />
+                                                        <FileQuestionMark className="h-4 w-4" />
+                                                    </>
+                                                )
+                                            }
+                                        </CardTitle>
+                                        <CardDescription className="text-wrap">{new Date(entry.uploadedAt).toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</CardDescription>
                                     </CardHeader>
-                                    {/* <CardContent className="flex aspect-square items-center justify-center p-6">
-                                        <span className="text-3xl font-semibold">{entry.fileName}</span>
-                                    </CardContent> */}
                                 </Card>
 
-                                <Button variant="destructive" onClick={() => handleRemoveEntry(entry.id)} className="cursor-pointer">
+                                <Button variant="destructive" onClick={() => handleRemoveEntry(entry.id)} className="cursor-pointer w-fit">
                                     <Trash2 className="h-4 w-4" />
                                 </Button>
                             </div>
@@ -108,7 +121,8 @@ export default function EntryList({ entriesProp }: { entriesProp: DocumentEntry[
                                         </span>
                                     )}
                                     {selectedEntry?.status === 'processing' && (
-                                        <span className="inline-flex items-center rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-700 ring-1 ring-inset ring-yellow-600/20">
+                                        <span className="inline-flex items-center gap-1 rounded-md bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-700 ring-1 ring-inset ring-yellow-600/20">
+                                            <Loader className="h-3 w-3 animate-spin" />
                                             Processing
                                         </span>
                                     )}
@@ -190,8 +204,8 @@ export default function EntryList({ entriesProp }: { entriesProp: DocumentEntry[
                             <AccordionTrigger>
                                 <span className="text-sm text-muted-foreground">Raw OCR Result</span>
                             </AccordionTrigger>
-                            <AccordionContent>
-                                <span className="text-sm whitespace-pre-wrap bg-background rounded font-mono p-2 max-h-[120px] overflow-y-scroll">{selectedEntry.ocrResult}</span>
+                            <AccordionContent className="overflow-y-scroll">
+                                <span className="text-sm bg-background rounded font-mono">{selectedEntry.ocrResult}</span>
                             </AccordionContent>
                         </AccordionItem>
                     </Accordion>}

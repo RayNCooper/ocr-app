@@ -22,7 +22,9 @@ export async function getEntries() {
         } as unknown as DocumentEntry
     }))
 
-    return entriesData
+    const sortedEntries = entriesData.sort((a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime())
+
+    return sortedEntries
 }
 
 export async function removeEntry(id: string) {
