@@ -162,7 +162,7 @@ export function FileUpload() {
             <Button
                 onClick={handleSubmit}
                 disabled={!selectedFile || isUploading}
-                className="w-full"
+                className="w-full cursor-pointer"
             >
                 {isUploading ? "Uploading..." : "Submit"}
             </Button>
