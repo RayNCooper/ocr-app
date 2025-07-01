@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",          // modern Node support
+    "module": "CommonJS",        // Node’s module system
+    "rootDir": "src",            // where your .ts files live
+    "outDir": "dist",            // where compiled .js files go
+    "strict": true,              // enable all strict checks
+    "esModuleInterop": true,     // for default-import compatibility
+    "forceConsistentCasingInFileNames": true
+  }
+}

@@ -10,6 +10,15 @@ services:
     networks:
       - app-network
 
+  worker:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile.worker
+    env_file:
+      - ./.env
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge
