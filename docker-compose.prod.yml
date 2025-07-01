@@ -1,0 +1,41 @@
+services:
+  nextjs-app:
+    extends:
+      file: docker-compose.yml
+      service: nextjs-app
+
+  worker:
+    extends:
+      file: docker-compose.yml
+      service: worker
+
+  redis:
+    extends:
+      file: docker-compose.yml
+      service: redis
+
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+      - /var/log/caddy:/var/log/caddy
+    networks:
+      - app-network
+    depends_on:
+      - nextjs-app
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+  caddy_data:
+  caddy_config:

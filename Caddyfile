@@ -1,0 +1,13 @@
+ocr.olio.solutions {
+    reverse_proxy nextjs:3000
+
+    encode gzip
+    log {
+        output file /var/log/caddy/access.log {
+            roll true
+            roll_size 50MB
+            roll_keep 5
+            roll_keep_for 720h
+        }
+    }
+}
