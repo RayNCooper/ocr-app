@@ -7,6 +7,8 @@ services:
       - "3000:3000"
     env_file:
       - ./.env
+    depends_on:
+      - redis
     networks:
       - app-network
 
@@ -16,9 +18,26 @@ services:
       dockerfile: Dockerfile.worker
     env_file:
       - ./.env
+    depends_on:
+      - redis
     networks:
       - app-network
+
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
 
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  redis-data: 
