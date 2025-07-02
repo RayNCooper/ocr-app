@@ -41,7 +41,17 @@ export default function EntryList({ entriesProp }: { entriesProp: DocumentEntry[
         setIsQueryingOriginalFile(true)
         try {
             const url = await viewOriginalFile(id)
-            window.open(url, '_blank')
+            
+            // Create a temporary anchor element to handle the download/view
+            const link = document.createElement('a')
+            link.href = url
+            link.target = '_blank'
+            link.rel = 'noopener noreferrer'
+            
+            // Add to DOM, click, and remove (required for some mobile browsers)
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
         } catch (error) {
             console.error(error)
             toast.error('Failed to view original file')
@@ -188,8 +198,17 @@ export default function EntryList({ entriesProp }: { entriesProp: DocumentEntry[
                                 </div>
                             </div>
                             <div className="flex flex-col gap-2 items-end w-full">
-                                <Button variant={"outline"} className="flex items-center cursor-pointer" disabled={isQueryingOriginalFile} onClick={() => handleViewOriginalFile(selectedEntry.id)}>
-                                    <ExternalLink className="h-4 w-4" />
+                                <Button 
+                                    variant={"outline"} 
+                                    className="flex items-center gap-2 cursor-pointer min-h-[44px] px-4 py-2 touch-manipulation" 
+                                    disabled={isQueryingOriginalFile} 
+                                    onClick={() => handleViewOriginalFile(selectedEntry.id)}
+                                >
+                                    {isQueryingOriginalFile ? (
+                                        <Loader className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <ExternalLink className="h-4 w-4" />
+                                    )}
                                     <span>View Original File</span>
                                 </Button>
                             </div>
