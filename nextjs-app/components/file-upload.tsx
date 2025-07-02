@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Upload } from "lucide-react"
 
-export function FileUpload() {
+export function FileUpload({ rateLimitProp }: { rateLimitProp: { allowed: boolean, count: number } }) {
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
     const [isUploading, setIsUploading] = useState(false)
     const [dragActive, setDragActive] = useState(false)
@@ -90,8 +90,8 @@ export function FileUpload() {
                     fileInputRef.current.value = ""
                 }
             }
-        } catch {
-            setError("Upload failed. Please try again.")
+        } catch (error) {
+            setError(`${error}`)
         } finally {
             setIsUploading(false)
         }
@@ -161,11 +161,16 @@ export function FileUpload() {
 
             <Button
                 onClick={handleSubmit}
-                disabled={!selectedFile || isUploading}
+                disabled={!selectedFile || isUploading || !rateLimitProp.allowed}
                 className="w-full cursor-pointer"
             >
                 {isUploading ? "Uploading..." : "Submit"}
             </Button>
+            {!rateLimitProp.allowed && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-sm text-red-800">Rate limit exceeded. <br /> {rateLimitProp.count}/5 uploads used this hour. <br /> Please try again in 1 hour.</p>
+                </div>
+            )}
         </div>
     )
 }

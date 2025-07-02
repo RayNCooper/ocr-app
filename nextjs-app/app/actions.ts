@@ -5,6 +5,7 @@ import S3Client from "@/lib/s3Client"
 import { DocumentEntry } from "@/lib/types"
 import { DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3"
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
+import { RateLimit } from "@/lib/rateLimit"
 
 export async function getEntries() {
 
@@ -67,4 +68,8 @@ export async function viewOriginalFile(id: string) {
     })
 
     return url
+}
+
+export async function getRateLimit() {
+    return await RateLimit.check()
 }
